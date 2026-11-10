@@ -1,0 +1,12 @@
+{
+  "name": "win-msix-appium-hyperexecute-sample",
+  "private": true,
+  "description": "Appium server and the WinCore Windows driver, installed together by npm ci. Appium picks up drivers listed here automatically.",
+  "scripts": {
+    "appium": "appium --address 127.0.0.1 --port 4723"
+  },
+  "devDependencies": {
+    "appium": "3.9.0",
+    "appium-wincore-driver": "3.3.2"
+  }
+}

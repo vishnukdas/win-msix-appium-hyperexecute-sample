@@ -1,2 +1,20 @@
+# Only tests, scripts and config go to HyperExecute. The app source (pos-app/) never leaves your
+# environment; the runner downloads the prebuilt MSIX instead.
+pos-app/
+.github/
+docs/
+node_modules/
+.appium/
+target/
+build/
+dist/
+logs/
+.m2/
+*.msix
+*.zip
+*.pfx
 hyperexecute
-node_modules
+hyperexecute.exe
+hyperexecute-*.log
+hyperexecuteupdate
+.hyperexecute/

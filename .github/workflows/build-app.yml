@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-2025  # Visual Studio 2026 (RNW 0.84 needs VS 18.6+)
     defaults:
       run:
         shell: pwsh
@@ -22,9 +22,9 @@ jobs:
     env:
       PUBLISHER: CN=PosSampleDev
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -78,7 +78,7 @@ jobs:
           Compress-Archive -Path dist\* -DestinationPath PosSample-x64.zip -Force
           Get-ChildItem dist -Recurse | Select-Object FullName, Length
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: PosSample-x64
           path: PosSample-x64.zip

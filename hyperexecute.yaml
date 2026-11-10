@@ -1,0 +1,49 @@
+version: 0.1
+# Same suite on Windows 11 (win11) and Windows Server 2022 (win), in parallel.
+runson: ${matrix.os}
+concurrency: 2
+matrix:
+  os: [win11, win]
+  suite: ["pos-app.xml"]
+
+captureScreenRecordingForScenarios: true
+scenarioCommandStatusOnly: true
+globalTimeout: 90
+testSuiteTimeout: 60
+testSuiteStep: 60
+
+# The runners ship Node 18; Appium 3 needs Node 20.19+.
+runtime:
+  language: node
+  version: "22"
+
+env:
+  MAVEN_OPTS: -Dmaven.repo.local=.m2/repository
+
+pre:
+  - powershell -NoProfile -ExecutionPolicy Bypass -File scripts/diagnostics.ps1
+  # Appium + appium-wincore-driver from package.json.
+  - npm ci --no-audit --no-fund
+  - mvn -q -DskipTests test-compile
+  # Prebuilt, signed MSIX from the GitHub release (built by .github/workflows/build-app.yml).
+  - powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-msix.ps1 -Source https://github.com/vishnukdas/win-msix-appium-hyperexecute-sample/releases/download/app-latest/PosSample-x64.zip
+  - powershell -NoProfile -Command "New-Item -ItemType Directory -Force build/test-results | Out-Null"
+
+background:
+  - npx appium --address 127.0.0.1 --port 4723 --log build/test-results/appium.log --log-level info:debug
+
+cacheKey: '{{ checksum "package-lock.json" }}-{{ checksum "pom.xml" }}'
+cacheDirectories:
+  - node_modules
+  - .m2
+
+testSuites:
+  - mvn test -Dsuite=suites/$suite
+
+uploadArtefacts:
+  - name: windows-test-results
+    path:
+      - build/test-results/**/
+      - target/surefire-reports/**/
+
+jobLabel: [windows, msix, appium-wincore, react-native-windows]
