@@ -1,0 +1,13 @@
+version: 0.1
+runson: ${matrix.os}
+concurrency: 2
+matrix:
+  os: [win, win11]
+globalTimeout: 30
+testSuiteTimeout: 20
+testSuiteStep: 20
+pre:
+  - powershell -NoProfile -ExecutionPolicy Bypass -File scripts/diagnostics.ps1
+testSuites:
+  - powershell -NoProfile -Command "Write-Host done"
+jobLabel: [win-discovery]

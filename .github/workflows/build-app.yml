@@ -1,0 +1,95 @@
+# Builds the React Native for Windows sample app into a signed MSIX and publishes it as the
+# "app-latest" GitHub release. HyperExecute only downloads that prebuilt package; the app source
+# never goes to the test machine.
+name: Build MSIX
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['pos-app/**', '.github/workflows/build-app.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: pos-app
+    env:
+      PUBLISHER: CN=PosSampleDev
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: pos-app/package-lock.json
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Generate the Windows project
+        run: npx react-native init-windows --template cpp-app --overwrite --no-telemetry --logging
+
+      - name: Create a self-signed code-signing certificate
+        run: |
+          # The MSIX publisher must match the signing certificate's subject.
+          $manifest = 'windows\PosSample.Package\Package.appxmanifest'
+          (Get-Content $manifest -Raw) -replace 'Publisher="CN=[^"]*"', "Publisher=`"$env:PUBLISHER`"" | Set-Content $manifest
+          $cert = New-SelfSignedCertificate -Type Custom -Subject $env:PUBLISHER -KeyUsage DigitalSignature `
+            -FriendlyName 'POS Sample dev signing' -CertStoreLocation Cert:\CurrentUser\My `
+            -TextExtension @('2.5.29.37={text}1.3.6.1.5.5.7.3.3', '2.5.29.19={text}')
+          $pfxPassword = [guid]::NewGuid().ToString()
+          New-Item -ItemType Directory -Force ..\dist | Out-Null
+          Export-PfxCertificate -Cert $cert -FilePath "$env:RUNNER_TEMP\signing.pfx" `
+            -Password (ConvertTo-SecureString $pfxPassword -AsPlainText -Force) | Out-Null
+          Export-Certificate -Cert $cert -FilePath ..\dist\PosSample.cer | Out-Null
+          "PFX_PASSWORD=$pfxPassword" >> $env:GITHUB_ENV
+          Write-Host "::add-mask::$pfxPassword"
+
+      - name: Build and package the MSIX
+        run: |
+          $props = @(
+            'AppxBundle=Never',
+            'UapAppxPackageBuildMode=SideloadOnly',
+            'AppxPackageSigningEnabled=true',
+            "PackageCertificateKeyFile=$env:RUNNER_TEMP\signing.pfx",
+            "PackageCertificatePassword=$env:PFX_PASSWORD",
+            "AppxPackageDir=$env:GITHUB_WORKSPACE\build\AppPackages\"
+          ) -join ','
+          npx react-native run-windows --release --arch x64 --no-launch --no-deploy --no-packager --no-telemetry --logging --msbuildprops $props
+
+      - name: Collect the package and its dependencies
+        working-directory: .
+        run: |
+          $msix = Get-ChildItem build\AppPackages -Recurse -Filter *.msix | Where-Object { $_.FullName -notmatch '\\Dependencies\\' } | Select-Object -First 1
+          if (-not $msix) { Get-ChildItem build\AppPackages -Recurse | Select-Object FullName; throw 'No .msix produced' }
+          Copy-Item $msix.FullName dist\PosSample.msix
+          $deps = Join-Path $msix.DirectoryName 'Dependencies\x64'
+          if (Test-Path $deps) {
+            New-Item -ItemType Directory -Force dist\Dependencies | Out-Null
+            Copy-Item "$deps\*" dist\Dependencies\
+          }
+          Compress-Archive -Path dist\* -DestinationPath PosSample-x64.zip -Force
+          Get-ChildItem dist -Recurse | Select-Object FullName, Length
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PosSample-x64
+          path: PosSample-x64.zip
+
+      - name: Publish the app-latest release
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view app-latest *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create app-latest --title 'Sample app (MSIX)' --notes 'Prebuilt, self-signed POS sample MSIX used by hyperexecute.yaml. Rebuilt on every push to pos-app/.' --latest
+          }
+          gh release upload app-latest PosSample-x64.zip --clobber
