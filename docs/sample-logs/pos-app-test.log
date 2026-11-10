@@ -41,7 +41,7 @@
 [STEP] Verified total = "Total: $9.99"
 [STEP] Saved screenshot build\test-results\screenshots\PosCheckoutTest-addingItemsUpdatesTotals-pass.png
 [STEP] Close app and end session
-[TEST] PASS PosCheckoutTest.addingItemsUpdatesTotals (0.7s)
+[TEST] PASS PosCheckoutTest.addingItemsUpdatesTotals (0.6s)
 
 [TEST] START PosCheckoutTest.checkoutShowsReceiptAndResetsCart
 [STEP] Launch PosSample_6s0ges3649b6a!App
@@ -67,7 +67,7 @@
 [STEP] Verified total = "Total: $0.00"
 [STEP] Saved screenshot build\test-results\screenshots\PosCheckoutTest-clearCartRemovesAllItems-pass.png
 [STEP] Close app and end session
-[TEST] PASS PosCheckoutTest.clearCartRemovesAllItems (0.5s)
+[TEST] PASS PosCheckoutTest.clearCartRemovesAllItems (0.6s)
 
 [TEST] START PosCheckoutTest.launchesWithEmptyCart
 [STEP] Launch PosSample_6s0ges3649b6a!App
@@ -79,7 +79,7 @@
 [STEP] Saved screenshot build\test-results\screenshots\PosCheckoutTest-launchesWithEmptyCart-pass.png
 [STEP] Close app and end session
 [TEST] PASS PosCheckoutTest.launchesWithEmptyCart (0.1s)
-[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.830 s -- in TestSuite
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.293 s -- in TestSuite
 [INFO] 
 [INFO] Results:
 [INFO] 
@@ -88,7 +88,7 @@
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  15.490 s
-[INFO] Finished at: 2026-11-10T13:17:44Z
+[INFO] Total time:  16.266 s
+[INFO] Finished at: 2026-11-10T13:28:30Z
 [INFO] ------------------------------------------------------------------------
 Command succeeded

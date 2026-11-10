@@ -92,8 +92,7 @@ Microsoft.WindowsAppRuntime.2   2.4.0.0
 Microsoft.WindowsAppRuntime.1.8 8000.946.1701.0 
 Microsoft.WindowsAppRuntime.1.8 8000.946.1701.0 
 Microsoft.WindowsAppRuntime.2   2.5.1.0         
-Microsoft.WindowsAppRuntime.2   2.6.5.0         
-Microsoft.WindowsAppRuntime.2   2.6.5.0         
+Microsoft.WindowsAppRuntime.2   2.5.1.0         
 
 
 
@@ -114,21 +113,23 @@ Microsoft.UI.Xaml.2.8 8.2501.31001.0
 
        Used         Free
        ----         ----
-86382108672 150321287168
+83748646912 152954224640
 
 
 
-npm registry reachable (3857 ms)
+npm registry reachable (4265 ms)
 ******************* npm ci --no-audit --no-fund *******************
 
-added 308 packages in 13s
+added 308 packages in 12s
 npm notice
 npm notice New major version of npm available! 10.9.4 -> 12.2.2
 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
 npm notice To update run: npm install -g npm@12.2.2
 npm notice
 ******************* mvn -q -ntp -DskipTests test-compile *******************
-******************* powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-msix.ps1 -Source app/PosSample-x64.zip *******************
+******************* powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-msix.ps1 -Source https://github.com/vishnukdas/win-msix-appium-hyperexecute-sample/releases/download/app-latest/PosSample-x64.zip *******************
+Downloading https://github.com/vishnukdas/win-msix-appium-hyperexecute-sample/releases/download/app-latest/PosSample-x64.zip
+Downloaded 68.9 MB in 0.5s
 Trusted certificate PosSample.cer
 Installed dependency Microsoft.VCLibs.x64.14.00.appx
 Installed dependency Microsoft.VCLibs.x64.14.00.Desktop.appx

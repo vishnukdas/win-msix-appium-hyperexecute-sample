@@ -122,20 +122,20 @@ Cache Directories:
     node_modules
     .m2
 
-✔ [2]  cache-download (5s)
 ✔ [1]  cache-download (6s)
-✔ [2]  setup-runtime (6s)
-✔ [1]  setup-runtime (6s)
-✔ [2]  pre (27s)
-✔ [1]  pre (39s)
+✔ [2]  cache-download (5s)
+✔ [2]  setup-runtime (5s)
+✔ [1]  setup-runtime (7s)
+✔ [2]  pre (28s)
+✔ [1]  pre (42s)
 ✔ [2]  mvn test -ntp `-Dsuite=suites/pos-app.xml (18s)
-✔ [2]  npx appium --address 127.0.0.1 --port 4723 --log build/test-results/appium.log --log-level info:debug (29s)
+✔ [2]  npx appium --address 127.0.0.1 --port 4723 --log build/test-results/appium.log --log-level info:debug (30s)
 ✔ [1]  mvn test -ntp `-Dsuite=suites/pos-app.xml (23s)
-✔ [1]  npx appium --address 127.0.0.1 --port 4723 --log build/test-results/appium.log --log-level info:debug (34s)
+✔ [1]  npx appium --address 127.0.0.1 --port 4723 --log build/test-results/appium.log --log-level info:debug (35s)
 
  COMPLETED
-    Test Execution Time:                  35s
-    Job Duration Time:                    1m25s
+    Test Execution Time:                  40s
+    Job Duration Time:                    1m30s
     Failed Tasks:                         0
 ```
 
@@ -161,8 +161,9 @@ See [Job Artifacts](https://www.testmuai.com/support/docs/hyperexecute-artifacts
 
 **Job page, Pre Steps.** One task per OS (`win11` shows as *Windows 11*, `win` as *Windows 10*;
 the `win` image is Windows Server 2022, which reports as Windows 10 build 20348), the stage timings,
-and the end of the `pre` log on Windows 11: certificate trusted, VCLibs installed, Windows App Runtime
-1.8 skipped because the image already has a newer one, app installed in 2s and its AUMID written:
+and the end of the `pre` log on Windows 11: the MSIX zip downloaded from the GitHub release (69 MB in
+0.5s), certificate trusted, VCLibs installed, Windows App Runtime 1.8 skipped because the image
+already has a newer one, app installed in 2s and its AUMID written:
 
 ![Job page with pre log](docs/images/hye-job-pre.jpg)
 
@@ -177,8 +178,8 @@ waiting for the window while the app starts; they are expected and are not failu
 ![Background Services with Appium log](docs/images/hye-background-appium.jpg)
 
 **Screen recording** ([`captureScreenRecordingForScenarios`](https://www.testmuai.com/support/docs/deep-dive-into-hyperexecute-yaml/#capturescreenrecordingforscenarios)). The camera icon on the scenario opens the video of the runner's screen
-(18s for the Windows 11 task). This frame, 11s in, shows the POS app on the Windows 11 desktop
-between two tests:
+(19s for the Windows 11 task). This frame, 11s in, is the checkout test on the Windows 11 desktop:
+Orange Juice in the cart, total $4.32, and the customer name being typed:
 
 ![Screen recording on the dashboard](docs/images/hye-video.jpg)
 
@@ -186,7 +187,7 @@ between two tests:
 
 ## Screenshots taken by the tests
 
-These were taken **on the HyperExecute runners** by the tests themselves (job `d5fc8bc5`) and are
+These were taken **on the HyperExecute runners** by the tests themselves (job `b577df5e`) and are
 uploaded as artifacts. WinCore's screenshot is of the app window.
 
 **App launched** (Windows Server 2022): empty cart, **Checkout** disabled:
@@ -227,9 +228,11 @@ Apache Maven 3.8.8
 WinAppDriver installed: False
 ...
 ***** npm ci --no-audit --no-fund *****
-added 308 packages in 13s
+added 308 packages in 12s
 ***** mvn -q -ntp -DskipTests test-compile *****
-***** powershell ... -File scripts/install-msix.ps1 -Source ... PosSample-x64.zip *****
+***** powershell ... -File scripts/install-msix.ps1 -Source https://github.com/vishnukdas/win-msix-appium-hyperexecute-sample/releases/download/app-latest/PosSample-x64.zip *****
+Downloading https://github.com/vishnukdas/win-msix-appium-hyperexecute-sample/releases/download/app-latest/PosSample-x64.zip
+Downloaded 68.9 MB in 0.5s
 Trusted certificate PosSample.cer
 Installed dependency Microsoft.VCLibs.x64.14.00.appx
 Installed dependency Microsoft.VCLibs.x64.14.00.Desktop.appx
@@ -278,13 +281,13 @@ Appium runs as a HyperExecute [`background`](https://www.testmuai.com/support/do
 [Appium] Available drivers:
 [Appium]   - wincore@3.3.2 (automationName 'Wincore')
 [HTTP] --> POST /session {"capabilities":{"firstMatch":[{"appium:newCommandTimeout":120,"appium:ms:waitForAppLaunch":30,"platformName":"windows","appium:automationName":"Wincore","appium:app":"PosSample_6s0ges3649b6a!App"}]}}
-[AppiumWincoreDriver@aa54] appium-wincore-driver v3.3.2 (session ef23429a-...)
-[AppiumWincoreDriver@aa54] Starting WincoreServer from: D:\foreman\win-msix-appium-hyperexecute-sample\node_modules\appium-wincore-driver\native\win-x64\WincoreServer.exe
-[AppiumWincoreDriver@aa54] Failed to locate window of the app. Sleeping for 200ms and retrying...
-[HTTP] <-- POST /session 200 1637 ms - 238
-[HTTP] --> POST /session/ef23429a-.../element {"using":"accessibility id","value":"add-coffee"}
-[HTTP] --> POST /session/ef23429a-.../element/42.66442.4.18/click {"id":"42.66442.4.18"}
-[HTTP] <-- POST /session/ef23429a-.../element/42.66442.4.18/click 200 149 ms - 14
+[AppiumWincoreDriver@6297] appium-wincore-driver v3.3.2 (session 318db37e-...)
+[AppiumWincoreDriver@6297] Starting WincoreServer from: D:\foreman\win-msix-appium-hyperexecute-sample\node_modules\appium-wincore-driver\native\win-x64\WincoreServer.exe
+[AppiumWincoreDriver@6297] Failed to locate window of the app. Sleeping for 200ms and retrying...
+[HTTP] <-- POST /session 200 1642 ms - 238
+[HTTP] --> POST /session/318db37e-.../element {"value":"add-coffee","using":"accessibility id"}
+[HTTP] --> POST /session/318db37e-.../element/42.66416.4.18/click {"id":"42.66416.4.18"}
+[HTTP] <-- POST /session/318db37e-.../element/42.66416.4.18/click 200 125 ms - 14
 ```
 
 A session, app launch included, starts in about 1.5 s (WinCore polls every 200 ms until the window
