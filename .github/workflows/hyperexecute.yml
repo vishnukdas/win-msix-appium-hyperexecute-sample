@@ -1,0 +1,76 @@
+name: HyperExecute Windows tests
+
+# Runs hyperexecute.yaml on HyperExecute (Windows 11 and Windows Server 2022 runners). The GitHub runner only hosts the
+# CLI: it uploads the repo, streams the job, and downloads logs and artifacts afterwards.
+#
+# Started by hand (Actions > HyperExecute Windows tests > Run workflow) with the LambdaTest
+# credentials entered as inputs, so anyone who forks the repo can run it with their own account.
+on:
+  workflow_dispatch:
+    inputs:
+      lt_username:
+        description: LambdaTest username
+        required: true
+        type: string
+      lt_access_key:
+        description: LambdaTest access key
+        required: true
+        type: string
+
+concurrency:
+  group: hyperexecute-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  hyperexecute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CI: "true"
+    steps:
+      # Read the inputs from the event file rather than ${{ inputs.* }}, so the values never appear
+      # in a step's script, and mask them so they are hidden in every log line that follows.
+      - name: Load credentials
+        run: |
+          user=$(jq -r '.inputs.lt_username' "$GITHUB_EVENT_PATH")
+          key=$(jq -r '.inputs.lt_access_key' "$GITHUB_EVENT_PATH")
+          echo "::add-mask::$user"
+          echo "::add-mask::$key"
+          echo "LT_USERNAME=$user" >> "$GITHUB_ENV"
+          echo "LT_ACCESS_KEY=$key" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v5
+
+      - name: Download HyperExecute CLI
+        run: |
+          curl -fsSL -o hyperexecute https://downloads.lambdatest.com/hyperexecute/linux/hyperexecute
+          chmod +x hyperexecute
+          ./hyperexecute --version
+
+      - name: Validate hyperexecute.yaml
+        run: ./hyperexecute --user "$LT_USERNAME" --key "$LT_ACCESS_KEY" --config hyperexecute.yaml --validate
+
+      - name: Run tests on HyperExecute
+        run: |
+          set -o pipefail
+          ./hyperexecute --user "$LT_USERNAME" --key "$LT_ACCESS_KEY" --config hyperexecute.yaml \
+            --download-artifacts --download-logs --download-artifacts-path build/hye-artifacts/ \
+            2>&1 | tee hyperexecute-run.log
+
+      - name: Add job link to summary
+        if: always()
+        run: |
+          link=$(grep -m1 -o 'https://hyperexecute.lambdatest.com/hyperexecute/task?jobId=[A-Za-z0-9-]*' hyperexecute-run.log || true)
+          echo "### HyperExecute job" >> "$GITHUB_STEP_SUMMARY"
+          echo "${link:-Job link not found; see the run log.}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: hyperexecute-results
+          path: |
+            build/hye-artifacts/
+            logs/
+            hyperexecute-run.log
+          if-no-files-found: warn

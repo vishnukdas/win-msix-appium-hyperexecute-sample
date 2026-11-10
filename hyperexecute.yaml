@@ -24,7 +24,7 @@ pre:
   - powershell -NoProfile -ExecutionPolicy Bypass -File scripts/diagnostics.ps1
   # Appium + appium-wincore-driver from package.json.
   - npm ci --no-audit --no-fund
-  - mvn -q -DskipTests test-compile
+  - mvn -q -ntp -DskipTests test-compile
   # Prebuilt, signed MSIX from the GitHub release (built by .github/workflows/build-app.yml).
   - powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-msix.ps1 -Source https://github.com/vishnukdas/win-msix-appium-hyperexecute-sample/releases/download/app-latest/PosSample-x64.zip
   - powershell -NoProfile -Command "New-Item -ItemType Directory -Force build/test-results | Out-Null"
@@ -38,12 +38,14 @@ cacheDirectories:
   - .m2
 
 testSuites:
-  - mvn test -Dsuite=suites/$suite
+  # Commands run in PowerShell, which splits an unescaped -Dsuite=... at the "."; the backtick escapes it.
+  - mvn test -ntp `-Dsuite=suites/$suite
 
 uploadArtefacts:
   - name: windows-test-results
     path:
       - build/test-results/**/
+      - build/test-results/screenshots/**/
       - target/surefire-reports/**/
 
 jobLabel: [windows, msix, appium-wincore, react-native-windows]

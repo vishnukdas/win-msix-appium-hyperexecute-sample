@@ -1,0 +1,86 @@
+******************* powershell -NoProfile -ExecutionPolicy Bypass -File scripts/diagnostics.ps1 *******************
+
+===== OS =====
+Microsoft Windows Server 2022 Datacenter 10.0.20348 build 20348 64-bit
+PROCESSOR_ARCHITECTURE=AMD64
+User: ghtestVM\ltuser
+Elevated admin: True
+Session: 1  Interactive: True
+Screen: 1920x1080
+
+===== Sideloading / Developer Mode =====
+
+
+AllowAllTrustedApps               : 1
+AllowDevelopmentWithoutDevLicense : 1
+
+
+
+
+
+Appx module: True
+
+===== Tools =====
+node          C:\hostedtoolcache\windows\node\22.21.1\x64\node.exe
+npm           C:\hostedtoolcache\windows\node\22.21.1\x64\npm.ps1
+java          C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\java.exe
+mvn           C:\tools\maven-3.8.8\bin\mvn.cmd
+dotnet        C:\PROGRA~1\dotnet\dotnet.exe
+git           C:\PROGRA~1\Git\bin\git.exe
+ffmpeg        -
+WinAppDriver  -
+makeappx      -
+signtool      -
+winget        -
+choco         C:\PROGRA~3\Chocolatey\bin\choco.exe
+node v22.21.1, npm 10.9.4
+openjdk version "17.0.17" 2025-10-21
+Apache Maven 3.8.8 (4c87b05d9aedce574290d1acc98575ed5eb6cd39)
+.NET SDKs: 90, newest 9.0.304
+WinAppDriver installed: False
+
+===== Runtime frameworks =====
+
+Name                    Version      Architecture
+----                    -------      ------------
+Microsoft.VCLibs.140.00 14.0.27810.0          X64
+
+
+
+
+
+Name                  Version       
+----                  -------       
+Microsoft.UI.Xaml.2.4 2.42007.9001.0
+
+
+
+
+===== Disk / network =====
+
+        Used        Free
+        ----        ----
+205374676992 31536386048
+
+
+
+npm registry reachable (2307 ms)
+******************* npm ci --no-audit --no-fund *******************
+
+added 308 packages in 7s
+npm notice
+npm notice New major version of npm available! 10.9.4 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+******************* mvn -q -ntp -DskipTests test-compile *******************
+******************* powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-msix.ps1 -Source app/PosSample-x64.zip *******************
+Trusted certificate PosSample.cer
+Installed dependency Microsoft.VCLibs.x64.14.00.appx
+Installed dependency Microsoft.VCLibs.x64.14.00.Desktop.appx
+Installed dependency Microsoft.WindowsAppRuntime.1.8.msix
+Installed PosSample.msix in 1.3s
+APP_ID=PosSample_6s0ges3649b6a!App
+Wrote build\installed-app.env
+******************* powershell -NoProfile -Command "New-Item -ItemType Directory -Force build/test-results | Out-Null" *******************
+New-Item -ItemType Directory -Force build/test-results | Out-Null

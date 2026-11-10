@@ -1,0 +1,94 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------< com.testmu.samples:win-msix-appium-hyperexecute-sample >-------
+[INFO] Building win-msix-appium-hyperexecute-sample 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ win-msix-appium-hyperexecute-sample ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\foreman\win-msix-appium-hyperexecute-sample\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:compile (default-compile) @ win-msix-appium-hyperexecute-sample ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ win-msix-appium-hyperexecute-sample ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\foreman\win-msix-appium-hyperexecute-sample\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:testCompile (default-testCompile) @ win-msix-appium-hyperexecute-sample ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.5.2:test (default-test) @ win-msix-appium-hyperexecute-sample ---
+[INFO] Using auto detected provider org.apache.maven.surefire.testng.TestNGProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running TestSuite
+
+[TEST] START PosCheckoutTest.addingItemsUpdatesTotals
+[STEP] Launch PosSample_6s0ges3649b6a!App
+[STEP] App is ready
+[STEP] Click add-coffee
+[STEP] Click add-coffee
+[STEP] Click add-bagel
+[STEP] Verified cart-line-coffee = "2 x Coffee = $7.00"
+[STEP] Verified cart-line-bagel = "1 x Bagel = $2.25"
+[STEP] Verified cart-count = "Items: 3"
+[STEP] Verified subtotal = "Subtotal: $9.25"
+[STEP] Verified tax = "Tax: $0.74"
+[STEP] Verified total = "Total: $9.99"
+[STEP] Saved screenshot build\test-results\screenshots\PosCheckoutTest-addingItemsUpdatesTotals-pass.png
+[STEP] Close app and end session
+[TEST] PASS PosCheckoutTest.addingItemsUpdatesTotals (0.7s)
+
+[TEST] START PosCheckoutTest.checkoutShowsReceiptAndResetsCart
+[STEP] Launch PosSample_6s0ges3649b6a!App
+[STEP] App is ready
+[STEP] Click add-juice
+[STEP] Verified total = "Total: $4.32"
+[STEP] Type "Alex" into customer-name
+[STEP] Click checkout
+[STEP] Verified receipt = "Order #1001 placed for Alex: $4.32"
+[STEP] Verified cart-count = "Items: 0"
+[STEP] Saved screenshot build\test-results\screenshots\PosCheckoutTest-checkoutShowsReceiptAndResetsCart-pass.png
+[STEP] Close app and end session
+[TEST] PASS PosCheckoutTest.checkoutShowsReceiptAndResetsCart (0.8s)
+
+[TEST] START PosCheckoutTest.clearCartRemovesAllItems
+[STEP] Launch PosSample_6s0ges3649b6a!App
+[STEP] App is ready
+[STEP] Click add-coffee
+[STEP] Click add-juice
+[STEP] Verified cart-count = "Items: 2"
+[STEP] Click clear-cart
+[STEP] Verified cart-count = "Items: 0"
+[STEP] Verified total = "Total: $0.00"
+[STEP] Saved screenshot build\test-results\screenshots\PosCheckoutTest-clearCartRemovesAllItems-pass.png
+[STEP] Close app and end session
+[TEST] PASS PosCheckoutTest.clearCartRemovesAllItems (0.5s)
+
+[TEST] START PosCheckoutTest.launchesWithEmptyCart
+[STEP] Launch PosSample_6s0ges3649b6a!App
+[STEP] App is ready
+[STEP] Verified title = "POS Sample"
+[STEP] Verified product-coffee = "Coffee $3.50"
+[STEP] Verified total = "Total: $0.00"
+[STEP] Checkout is disabled while the cart is empty
+[STEP] Saved screenshot build\test-results\screenshots\PosCheckoutTest-launchesWithEmptyCart-pass.png
+[STEP] Close app and end session
+[TEST] PASS PosCheckoutTest.launchesWithEmptyCart (0.1s)
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.830 s -- in TestSuite
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  15.490 s
+[INFO] Finished at: 2026-11-10T13:17:44Z
+[INFO] ------------------------------------------------------------------------
+Command succeeded

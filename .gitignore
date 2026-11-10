@@ -19,3 +19,5 @@ hyperexecute-code-*.zip
 mask-*.yaml
 .hyperexecute/
 pos-app/windows/
+app/
+hyperexecute-local.yaml

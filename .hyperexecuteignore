@@ -11,7 +11,7 @@ dist/
 logs/
 .m2/
 *.msix
-*.zip
+hyperexecute-code-*.zip
 *.pfx
 hyperexecute
 hyperexecute.exe

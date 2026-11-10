@@ -24,11 +24,13 @@ foreach ($t in 'node','npm','java','mvn','dotnet','git','ffmpeg','WinAppDriver',
   $c = Get-Command $t -ErrorAction SilentlyContinue
   Write-Host ("{0,-13} {1}" -f $t, $(if ($c) { $c.Source } else { '-' }))
 }
-node -v; npm -v; java -version 2>&1 | Select-Object -First 1; mvn -v 2>&1 | Select-Object -First 1
-dotnet --list-sdks 2>&1
-Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Directory -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name
-Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin\*\x64\makeappx.exe' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
-Test-Path 'C:\Program Files\Windows Application Driver\WinAppDriver.exe'
+Write-Host "node $(node -v), npm $(npm -v)"
+# java -version writes to stderr, which PowerShell would report as an error.
+cmd /c "java -version 2>&1" | Select-Object -First 1
+mvn -v 2>&1 | Select-Object -First 1
+$sdks = @(dotnet --list-sdks 2>$null)
+if ($sdks) { Write-Host ".NET SDKs: $($sdks.Count), newest $(($sdks[-1] -split ' ')[0])" }
+Write-Host "WinAppDriver installed: $(Test-Path 'C:\Program Files\Windows Application Driver\WinAppDriver.exe')"
 
 Section 'Runtime frameworks'
 Get-AppxPackage -Name 'Microsoft.VCLibs*' -ErrorAction SilentlyContinue | Select-Object Name, Version, Architecture | Format-Table | Out-String | Write-Host
